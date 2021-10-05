@@ -1,0 +1,21 @@
+hdfs dfs -mkdir /my_dir
+hdfs dfs -mkdir /my_dir/sub_dir
+Папка, в которой временно сохраняются удаленные файлы. Добавить при удалении флаг -skipTrash или изменить настройку в core-site.xml
+hdfs dfs -touchz /my_dir/sub_dir/empty.txt
+hdfs dfs -rm /my_dir/sub_dir/empty.txt
+hdfs dfs -rm -r /my_dir
+
+
+hdfs dfs -mkdir /my_dir
+docker cp README.md namenode:/
+hdfs dfs -put README.md /my_dir
+hdfs dfs -cat /my_dir/README.md
+hdfs dfs -tail /my_dir/README.md
+hdfs dfs -cat /my_dir/README.md | head
+hdfs dfs -cp /my_dir/README.md /
+
+
+hdfs dfs -setrep -w 1 /my_dir/README.md (Уменьшение числа реплик и обратное увеличение до 3 заняло около 3 секунд)
+hdfs fsck /README.md -files -blocks -locations
+hdfs fsck -blockId blk_1073741834
+
