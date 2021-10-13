@@ -1,0 +1,26 @@
+1) SELECT
+    artist_mb,
+    scrobbles_lastfm
+FROM artists a
+INNER JOIN (SELECT MAX(scrobbles_lastfm) as max_scrob FROM artists) max_s
+    on a.scrobbles_lastfm = max_s.max_scrob;
+
+RESULT:
+artist_mb	scrobbles_lastfm
+The Beatles	517126254
+
+2) SELECT
+    trim(tag_lastfm) as tag,
+    count(*) as tag_count
+FROM artists
+LATERAL VIEW explode(split(tags_lastfm, ';')) adTable AS tag_lastfm
+WHERE tags_lastfm != ''
+GROUP BY trim(tag_lastfm)
+SORT BY tag_count DESC
+LIMIT 1;
+
+RESULT:
+tag			tag_count
+seen live	99540
+
+3) 
