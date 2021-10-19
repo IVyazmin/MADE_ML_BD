@@ -23,4 +23,62 @@ RESULT:
 tag			tag_count
 seen live	99540
 
-3) 
+3) SELECT
+    artist_lastfm,
+    a_tag,
+    tag_count
+FROM
+    (SELECT
+        artist_lastfm,
+        a_tag,
+        listeners_lastfm,
+        tag_count,
+        MAX(listeners_lastfm) OVER(PARTITION BY a_tag) AS max_listeners
+    FROM
+        (SELECT
+            TRIM(tag_lastfm) AS a_tag,
+            artist_lastfm,
+            listeners_lastfm
+        FROM artists LATERAL VIEW explode(split(tags_lastfm, ';')) adTable AS tag_lastfm
+        WHERE tags_lastfm != '') a
+    INNER JOIN
+        (SELECT
+            TRIM(tag_lastfm) as t_tag,
+            COUNT(*) AS tag_count
+        FROM artists LATERAL VIEW EXPLODE(SPLIT(tags_lastfm, ';')) adTable AS tag_lastfm
+        WHERE tags_lastfm != ''
+        GROUP BY trim(tag_lastfm)
+        SORT BY tag_count DESC LIMIT 10) t
+    ON a.a_tag = t.t_tag) z
+WHERE listeners_lastfm = max_listeners
+SORT BY tag_count DESC 
+
+RESULT:
+ 	artist_lastfm		a_tag					tag_count
+1	Coldplay			seen live				99540
+2	Coldplay			rock					73406
+3	Coldplay			electronic				70676
+4	Diddy - Dirty Money	under 2000 listeners	50827
+5	Jason Derülo		All						50166
+6	Coldplay			pop						48447
+7	Coldplay			indie					47452
+8	Coldplay			alternative				43732
+9	Radiohead			experimental			40845
+10	Rihanna				female vocalists		35779
+
+4) Артист из Испании с максимальным числом слушателей
+SELECT
+    artist_lastfm,
+    listeners_lastfm
+FROM
+    (SELECT
+        artist_lastfm,
+        listeners_lastfm,
+        MAX(listeners_lastfm) OVER(PARTITION BY country_mb) AS max_listeners
+    FROM artists 
+    WHERE country_mb = 'Spain') z 
+WHERE listeners_lastfm = max_listeners
+
+RESULT:
+ 	artist_lastfm		listeners_lastfm
+1	Enrique Iglesias	1549855
