@@ -1,0 +1,5 @@
+22:03:46.305 [main] INFO linerModel.Main$ - 3.468827340644301E7
+22:03:46.313 [main] INFO linerModel.Main$ - 3.952539220463553E7
+22:03:46.318 [main] INFO linerModel.Main$ - 4.355874874524786E7
+22:03:46.322 [main] INFO linerModel.Main$ - 2.7176574596513513E7
+22:03:46.323 [main] INFO linerModel.Main$ - 3.339057663836895E7
